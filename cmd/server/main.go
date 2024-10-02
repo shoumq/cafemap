@@ -1,15 +1,28 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"server/internal/user"
 
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	dsn := "user=postgres port=5433 password=Andrew1095 dbname=goapi sslmode=disable"
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Ошибка загрузки .env файла")
+	}
+
+	dbUser := os.Getenv("DB_USER")
+	dbPort := os.Getenv("DB_PORT")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+
+	dsn := fmt.Sprintf("user=%s port=%s password=%s dbname=%s sslmode=disable", dbUser, dbPort, dbPassword, dbName)
 
 	repo, err := user.NewRepository(dsn)
 	if err != nil {
